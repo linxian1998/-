@@ -34,13 +34,13 @@
     position: relative;
     flex: 1;
     border: 0.5px solid white;
-    transition: 1s;
+    transition: 0.5s;
 }
 .contentOn {
     position: relative;
     width: 40%;
     border: 0.5px solid white;
-    transition: 1s;
+    transition: 0.5s;
 }
 #content ul li:not(.contentOn) .txt {
     font-size: 24px;
