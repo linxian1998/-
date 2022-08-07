@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="stylesheet" href="./style.css" />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+      }
+      #wrapper {
+        width: 1000px;
+        height: 400px;
+        margin: 200px auto 0;
+        background-color: antiquewhite;
+        position: relative;
+        z-index: 111;
+      }
+      ul {
+        list-style: none;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="wrapper">
+      <div id="bg">
+        <ul>
+          <li class="bj"></li>
+          <li class="sh"></li>
+          <li class="gz"></li>
+          <li class="wu"></li>
+          <li class="sy"></li>
+        </ul>
+      </div>
+      <div id="content">
+        <ul>
+          <li class="bj">
+            <div class="txt">北京</div>
+            <div class="desc">
+              <p>刘金洲在北京读书！</p>
+              <p>学的是软件工程，以后的目标是年薪40w</p>
+            </div>
+          </li>
+          <li class="sh">
+            <div class="txt">上海</div>
+            <div class="desc">
+              <p>黄家祺在上海读书！</p>
+              <p>学的是气象学，自学编程，以后的目标是年薪21w</p>
+            </div>
+          </li>
+          <li class="gz">
+            <div class="txt">广州</div>
+            <div class="desc">
+              <p>无人在广州读书！</p>
+              <p>学的是烤鹅专业，年薪不可限量</p>
+            </div>
+          </li>
+          <li class="wu">
+            <div class="txt">武汉</div>
+            <div class="desc">
+              <p>王昊在武汉读书！</p>
+              <p>学的是种玉米，也想利用machine learning的浪潮，狠狠发财，以后的目标是年薪10w</p>
+            </div>
+          </li>
+          <li class="sy">
+            <div class="txt">沈阳</div>
+            <div class="desc">
+              <p>张伟晨在沈阳读书！</p>
+              <p>学的是航天工程，以后自学会计，以后的目标是年薪200w，太狂了！</p>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <script>
+      let wrapper = document.getElementById("wrapper");
+      let wrapperLeft = wrapper.offsetLeft;
+      window.onresize = () => {
+        wrapperLeft = wrapper.offsetLeft;
+      };
+      // 获得底层图片的li
+      let bg = document.getElementById("bg");
+      let bgul = bg.children[0];
+      let bglis = [...bgul.children];
+      // 获得上层图片的li
+      let content = document.getElementById("content");
+      let contentUl = content.children[0];
+      let contentlis = [...contentUl.children];
+      // 当前展示的element
+      let curContentEle;
+      // 添加图片
+      function addimgs() {
+        const list = ["beijing", "shanghai1", "guangzhou", "wuhan", "shenyang"];
+        for (li in bglis) {
+          bglis[li].style.backgroundImage = `url(./imgs/${list[li]}.jpg)`;
+        }
+        bglis[0].className = `on ${bglis[0].className}`;
+        contentlis[0].className = `contentOn ${contentlis[0].className}`;
+        curContentEle = contentlis[0]
+      }
+      addimgs();
+
+      // 处理图片和内容的展示
+      function editImgShow(e) {
+        // 获得当前contentele的左右边界
+        const {left: curContentEleLeft} = getElementPosition(curContentEle);
+        const curContentEleRight = curContentEleLeft + 400;
+        console.log(curContentEleLeft, curContentEleRight)
+        if(e.clientX>=curContentEleLeft && e.clientX<=curContentEleRight){
+          return
+        }
+        // 获得距离左边界的宽度
+        // const x = Math.abs(e.offsetX)  这个太简单了 不通用
+        const x = Math.abs(e.clientX - wrapperLeft);
+        // 计算这个范围内是否需要渲染新的照片
+        const index = Math.floor(x / 201); // 0 1 2 3 4
+        // 这两个是清空操作
+        for (li in bglis) {
+          const split = bglis[li].className.split(" ").filter((item) => {
+            return item !== "on";
+          });
+          bglis[li].className = split.join(" ");
+        }
+        for (li in contentlis) {
+          const split = contentlis[li].className.split(" ").filter((item) => {
+            return item !== "contentOn";
+          });
+          contentlis[li].className = split.join(" ");
+        }
+        // 赋值操作
+        bglis[index].className = `on ${bglis[index].className}`;
+        contentlis[index].className = `contentOn ${contentlis[index].className}`;
+        curContentEle = contentlis[index]
+      }
+
+      // 挂载
+      wrapper.addEventListener("mousemove", editImgShow);
+      function getElementPosition(element) {
+        let top = element.offsetTop //这是获取元素距父元素顶部的距离
+        let left = element.offsetLeft
+        var current = element.offsetParent //这是获取父元素
+        while (current !== null) {
+          //当它上面有元素时就继续执行
+          top += current.offsetTop //这是获取父元素距它的父元素顶部的距离累加起来
+          left += current.offsetLeft
+          current = current.offsetParent //继续找父元素
+        }
+        console.log(left)
+        return {
+          top,
+          left,
+        }
+      }
+
+    </script>
+  </body>
+</html>
